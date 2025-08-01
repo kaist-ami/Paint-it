@@ -2,12 +2,10 @@ torch==1.12.0+cu113
 torchvision==0.13.0+cu113
 --extra-index-url https://download.pytorch.org/whl/cu113
 
-# Git 설치 항목들
 git+https://github.com/NVlabs/nvdiffrast.git@v0.3.0
 git+https://github.com/facebookresearch/iopath.git
 git+https://github.com/facebookresearch/fvcore.git
 
-# 일반 패키지들
 diffusers==0.12.1
 huggingface-hub==0.11.1
 transformers==4.21.1
