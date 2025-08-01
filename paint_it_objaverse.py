@@ -29,8 +29,6 @@ OBJECT_PATH = './data'
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mesh_path', type=str, required=True)
-    parser.add_argument('--prompt', type=str, required=True)
 
     # model
     parser.add_argument('--decay', type=float, default=0)  # weight decay
@@ -52,6 +50,7 @@ def parse_args():
     parser.add_argument('--bg', type=float, default=0.25)
     parser.add_argument('--logging', type=eval, default=True, choices=[True, False])
     parser.add_argument('--n_view', type=int, default=4)
+    parser.add_argument('--exp_name', type=str, default='debug')
     parser.add_argument('--env_scale', type=float, default=2.0)
     parser.add_argument('--envmap', type=str, default='data/irrmaps/mud_road_puresky_4k.hdr')
     parser.add_argument('--log_freq', type=int, default=100)
@@ -129,10 +128,11 @@ def main(args, guidance):
 
     # Get text prompt and tokenize it
     sd_prompt = ", ".join(
-        (f"a DSLR photo of {args.prompt}", "best quality, high quality, extremely detailed, good geometry"))
+        (f"a DSLR photo of {args.identity}", "best quality, high quality, extremely detailed, good geometry"))
 
     # load obj and read uv information
-    obj_f_uv, obj_v_uv, obj_f, obj_v = load_obj_uv(obj_path=args.mesh_path, device=device)
+    args.obj_path = os.path.join(OBJECT_PATH, args.objaverse_id, 'mesh.obj')
+    obj_f_uv, obj_v_uv, obj_f, obj_v = load_obj_uv(obj_path=args.obj_path, device=device)
 
     # initialize template mesh
     mesh_t = Mesh(obj_v, obj_f, v_tex=obj_v_uv, t_tex_idx=obj_f_uv)
@@ -291,11 +291,19 @@ def main(args, guidance):
 if __name__ == '__main__':
     args = parse_args()
 
+    mesh_dicts = {
+        '9ce8ab24383c4c93b4c1c7c3848abc52': 'a pretzel',
+    }
+
     # load stable-diffusion model
     guidance = StableDiffusion(device, min=args.sd_min, max=args.sd_max)
     guidance.eval()
     for p in guidance.parameters():
         p.requires_grad = False
 
-    args.exp_name = '_'.join((args.prompt.split(' ')))
-    main(args, guidance)
+    # iterate through the renderpeople items
+    for obj_id, caption in mesh_dicts.items():
+        args.exp_name = '_'.join((caption.split(' ')[1:] + [obj_id[:6]]))
+        args.objaverse_id = obj_id
+        args.identity = caption
+        main(args, guidance)

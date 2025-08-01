@@ -24,7 +24,7 @@ Later versions should work, but have not been tested.
 
 ### Environment setup
 
-```
+```bash
 conda create -n paint_it python=3.8
 conda activate paint_it
 
@@ -43,20 +43,26 @@ pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.co
 ### Preparing 3D mesh data
 Currently, this repository contains a sample mesh from [Objaverse](https://objaverse.allenai.org/) dataset.
 To download a subset of Objaverse, you can refer to the scripts provided [here](https://github.com/daveredrum/Text2Tex?tab=readme-ov-file#benchmark-on-objaverse-subset).
+Or, please prepare your own mesh `.obj` file, which already has texture coordinates defined (check if you have the lines `vt 0.xxx 0.xxx` defined inside your `.obj` contents). 
 
 
-### Generate PBR texture maps for 3D mesh
+### Generate PBR texture maps for a custom 3D mesh
 Given a 3D mesh in `.obj` format and the text prompt, you can run below command to generate PBR texture maps.
-```
+```bash
 # Generate PBR textures for .obj meshes
-python paint_it.py
+python paint_it.py --mesh_path PATH_TO_YOUR_MESH.obj --prompt YOUR_TEXT_PROMPT
 ```
 
+### Generate PBR texture maps for objaverse meshes
+You can run Paint-it for the Objaverse meshes with below command.
+```bash
+# Generate PBR textures for .obj meshes
+python paint_it_objaverse.py
+```
 When generating PBR texture maps for a subset of Objaverse meshes, 
-you can modify below dictionary (paint_it.py, L294) to handle multiple mesh object IDs and corresponding text prompts.
+you can modify below dictionary (paint_it_objaverse.py, L294) to handle multiple mesh object IDs and corresponding text prompts.
 
-
-```
+```bash
 mesh_dicts = {
     '9ce8ab24383c4c93b4c1c7c3848abc52': 'a pretzel',
 }
@@ -77,7 +83,7 @@ Before you proceed, you need to download SMPL related materials. Get yourself re
 
 Given a 3D human mesh in SMPL parameter `.npz` format and text prompt, you can run below command to generate PBR texture maps.
 The example `.npz` file is located under `./data/smpld_example`.
-```
+```bash
 # Generate PBR textures for 3D human meshes
 python paint_it_human.py
 ```
