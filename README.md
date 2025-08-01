@@ -28,18 +28,16 @@ Later versions should work, but have not been tested.
 conda create -n paint_it python=3.8
 conda activate paint_it
 
-# pytorch installation
-pip install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113
+# set CUDA PATH
+export CUDA_HOME=/usr/local/cuda-11.3
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 
-# for pytorch3d installation
-conda install -c fvcore -c iopath -c conda-forge fvcore iopath
-# for python3.8, cuda 11.3, pytorch 1.12 (py38_cu113_pyt1120) -> need to install pytorch3d-0.7.2 
+# install required packages
+pip install -r requirements.txt
+
+# install PyTorch3D: for python3.8, cuda 11.3, pytorch 1.12 (py38_cu113_pyt1120) -> need to install pytorch3d-0.7.2 
 pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu113_pyt1120/download.html
-
-pip install git+https://github.com/NVlabs/nvdiffrast/
-pip install diffusers==0.12.1 huggingface-hub==0.11.1 transformers==4.21.1 sentence-transformers==2.2.2
-pip install PyOpenGL PyOpenGL_accelerate accelerate rich ninja scipy trimesh imageio matplotlib chumpy opencv-python smplx
-pip install numpy==1.23.1
 ```
 
 ### Preparing 3D mesh data
